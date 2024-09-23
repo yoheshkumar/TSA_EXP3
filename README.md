@@ -12,43 +12,49 @@ type to fit the data.
 5. Represent the result in graphical representation as given below.
 ### PROGRAM:
 ```
-NAME : YAMUNAASRI T S
-REG NO : 212222240117
+NAME : YOHESH KUMAR R.M
+REG NO : 212222240118
 ```
 ```
 import numpy as np
 import pandas as pd
-import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
-data = [3, 16, 156, 47, 246, 176, 233, 140, 130, 101, 166, 201, 200, 116, 118, 247, 209, 52, 153, 232, 128, 27, 192, 168, 208, 187, 228, 86, 30, 151, 18, 254, 76, 112, 67, 244, 179, 150, 89, 49, 83, 147, 90, 33, 6, 158, 80, 35, 186, 127]
+# Load the Microsoft Stock dataset
+data = pd.read_csv('Microsoft_Stock.csv')
 
-# Mean
-data_mean = np.mean(data)
+# Extract the 'Close' prices and ensure they are numeric
+time_series = data['Close']
+time_series = pd.to_numeric(time_series, errors='coerce').dropna()
 
-# Variance
-data_var = np.var(data)
+# Calculate the number of data points and lags
+n_data_points = len(time_series)
+n_lags = min(35, n_data_points - 1)
+acf_values = np.zeros(n_lags)
 
-# Normalized data
-normalized_data = (data - data_mean) / np.sqrt(data_var)
+# Calculate the mean and variance of the time series data
+mean = np.mean(time_series)
+variance = np.var(time_series)
+normalized_data = time_series - mean
 
-# Compute the autocorrelation function (ACF)
-acf_result = np.correlate(normalized_data, normalized_data, mode='full')
+# Compute the ACF manually
+for lag in range(n_lags):
+    lagged_data = np.roll(normalized_data, -lag)
+    acf_values[lag] = np.sum(normalized_data[:n_data_points-lag] * lagged_data[:n_data_points-lag]) / (variance * (n_data_points - lag))
 
-# Take only the positive lags
-acf_result = acf_result[len(acf_result)//2:]
-
-# Plot the ACF
-plt.figure(figsize=(10, 5))
-plt.stem(acf_result[:36], use_line_collection=True)
+# Plot the ACF results with blue stems and red markers
+plt.figure(figsize=(10, 6))
+plt.stem(range(n_lags), acf_values, linefmt='b-', markerfmt='ro', basefmt='k-', use_line_collection=True)
+plt.title('ACF Plot for Microsoft Stock Close Prices')
 plt.xlabel('Lag')
-plt.ylabel('Autocorrelation')
-plt.title('Autocorrelation Function (ACF)')
+plt.ylabel('ACF')
+plt.grid(True)
 plt.show()
+
 ```
 
 ### OUTPUT:
-![image](https://github.com/user-attachments/assets/67d078df-855f-42c4-a5ec-35f2ecab00ab)
+![image](https://github.com/user-attachments/assets/6c69db79-b573-4fd3-b7ef-14a1711e759f)
 
 
 ### RESULT:
