@@ -15,7 +15,7 @@ type to fit the data.
 NAME : YOHESH KUMAR R.M
 REG NO : 212222240118
 ```
-```
+```python
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -52,7 +52,6 @@ plt.grid(True)
 plt.show()
 
 ```
-
 ### OUTPUT:
 ![image](https://github.com/user-attachments/assets/6c69db79-b573-4fd3-b7ef-14a1711e759f)
 
